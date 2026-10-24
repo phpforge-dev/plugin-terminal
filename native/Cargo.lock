@@ -2239,6 +2239,7 @@ dependencies = [
  "portable-pty",
  "serde_json",
  "tauri",
+ "uuid",
 ]
 
 [[package]]

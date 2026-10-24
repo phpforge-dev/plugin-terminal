@@ -1,5 +1,7 @@
-type Res<T> = Result<T,String>;
-fn err(e:impl std::fmt::Display)->String{e.to_string()}
+type Res<T> = Result<T, String>;
+fn err(e: impl std::fmt::Display) -> String {
+    e.to_string()
+}
 use portable_pty::{native_pty_system, ChildKiller, CommandBuilder, MasterPty, PtySize};
 use serde_json::{json, Value};
 use std::{
@@ -239,4 +241,22 @@ fn size(cols: u16, rows: u16) -> Res<()> {
     Ok(())
 }
 
-#[cfg(test)] mod tests { use super::*; #[test] fn bounded_dimensions(){assert!(size(80,24).is_ok());for (c,r) in [(0,24),(501,24),(80,0),(80,301)]{assert!(size(c,r).is_err());}} #[test] fn stale_session_close_is_idempotent(){let mut t=Terminals::default();assert_eq!(t.close("gone"),Value::Null);assert_eq!(t.close("gone"),Value::Null);assert!(t.ack("gone",1).is_ok());assert!(t.write("gone","x").is_err());} }
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn bounded_dimensions() {
+        assert!(size(80, 24).is_ok());
+        for (c, r) in [(0, 24), (501, 24), (80, 0), (80, 301)] {
+            assert!(size(c, r).is_err());
+        }
+    }
+    #[test]
+    fn stale_session_close_is_idempotent() {
+        let mut t = Terminals::default();
+        assert_eq!(t.close("gone"), Value::Null);
+        assert_eq!(t.close("gone"), Value::Null);
+        assert!(t.ack("gone", 1).is_ok());
+        assert!(t.write("gone", "x").is_err());
+    }
+}
